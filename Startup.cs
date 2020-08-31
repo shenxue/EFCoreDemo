@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -25,6 +26,11 @@ namespace EFCoreDemo
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var loggerFactory = new LoggerFactory();
+            loggerFactory.AddProvider(new EFLoggerProvider());
+            string sqlConnection = @"Server=10.30.2.23;Database=identities;Uid=idadmin;Pwd=gRjfSDF23b3C@ovU;";
+            services.AddDbContextPool<MyDbContext>(options => options.UseMySql(sqlConnection)
+            .UseLoggerFactory(loggerFactory), 800);
             services.AddControllers();
         }
 
